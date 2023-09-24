@@ -1,0 +1,110 @@
+bash:
+
+npx create-react-app fifa-player-cards
+cd fifa-player-cards
+
+
+javascript:
+
+// src/players.js
+const players = [
+  {
+    name: "Lionel Messi",
+    team: "Paris Saint-Germain",
+    nationality: "Argentinian",
+    jerseyNumber: 30,
+    age: 34,
+    imageUrl: "https://example.com/messi.jpg",
+  },
+  {
+    name: "Cristiano Ronaldo",
+    team: "Manchester United",
+    nationality: "Portuguese",
+    jerseyNumber: 7,
+    age: 36,
+    imageUrl: "https://example.com/ronaldo.jpg",
+  },
+  // Add more player objects here
+];
+
+export default players;
+
+// src/Player.js
+import React from "react";
+import Card from "react-bootstrap/Card";
+
+const Player = ({ name, team, nationality, jerseyNumber, age, imageUrl }) => {
+  return (
+    <Card style={{ width: "18rem", margin: "20px" }}>
+      <Card.Img variant="top" src={imageUrl} />
+      <Card.Body>
+        <Card.Title>{name}</Card.Title>
+        <Card.Text>
+          <strong>Team:</strong> {team}
+          <br />
+          <strong>Nationality:</strong> {nationality}
+          <br />
+          <strong>Jersey Number:</strong> {jerseyNumber}
+          <br />
+          <strong>Age:</strong> {age}
+        </Card.Text>
+      </Card.Body>
+    </Card>
+  );
+};
+
+Player.defaultProps = {
+  name: "Player Name",
+  team: "Team Name",
+  nationality: "Nationality",
+  jerseyNumber: 0,
+  age: 0,
+  imageUrl: "https://example.com/placeholder.jpg",
+};
+
+export default Player;
+
+// src/PlayersList.js
+import React from "react";
+import Player from "./Player";
+import players from "./players";
+
+const PlayersList = () => {
+  return (
+    <div className="d-flex flex-wrap justify-content-center">
+      {players.map((player, index) => (
+        <Player key={index} {...player} />
+      ))}
+    </div>
+  );
+};
+
+export default PlayersList;
+
+// src/App.js
+import React from "react";
+import PlayersList from "./PlayersList";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+
+function App() {
+  return (
+    <div className="App">
+      <h1>FIFA Player Cards</h1>
+      <PlayersList />
+    </div>
+  );
+}
+
+export default App;
+
+
+bash: 
+
+npm start
+
+
+
+
+
+
