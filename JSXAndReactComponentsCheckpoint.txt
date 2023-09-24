@@ -1,0 +1,53 @@
+javascript:
+
+
+// src/product.js
+
+const product = {
+  name: 'Product Name',
+  price: '$10.99',
+  description: 'Product description goes here.',
+  image: 'https://example.com/product-image.jpg',
+};
+
+export default product;
+
+// src/Name.js
+
+import React from 'react';
+import product from './product';
+
+function Name() {
+  return <h1>{product.name}</h1>;
+}
+
+export default Name;
+
+// src/App.js
+
+import React from 'react';
+import Name from './Name';
+import Price from './Price';
+import Description from './Description';
+import Image from './Image';
+
+const firstName = 'YourFirstName'; // Replace with your first name
+
+function App() {
+  return (
+    <div className="App">
+      <div className="product-card">
+        <Image />
+        <div className="product-details">
+          <Name />
+          <Price />
+          <Description />
+        </div>
+      </div>
+      <p>{`Hello, ${firstName ? firstName : 'there'}!`}</p>
+    </div>
+  );
+}
+
+export default App;
+
