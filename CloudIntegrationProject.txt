@@ -1,0 +1,60 @@
+import React from 'react';
+import './App.css';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
+const movies = [
+  {
+    id: 1,
+    title: 'Movie 1',
+    description: 'This is the description for Movie 1...',
+    trailerLink: 'https://www.youtube.com/embed/123456789',
+  },
+  // ... other movie objects
+];
+
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <h1>Movie App</h1>
+        <Route exact path="/" render={() => <Home movies={movies} />} />
+        <Route path="/movie/:id" render={(props) => <MovieDetail {...props} movies={movies} />} />
+      </div>
+    </Router>
+  );
+}
+
+function Home({ movies }) {
+  return (
+    <div>
+      <h2>Movie List</h2>
+      <ul>
+        {movies.map((movie) => (
+          <li key={movie.id}>
+            <Link to={`/movie/${movie.id}`}>{movie.title}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function MovieDetail({ match, movies }) {
+  const { params } = match;
+  const movie = movies.find((m) => m.id === parseInt(params.id));
+
+  if (!movie) {
+    return <div>Movie not found</div>;
+  }
+
+  return (
+    <div>
+      <h2>{movie.title}</h2>
+      <p>{movie.description}</p>
+      <iframe title={movie.title} width="560" height="315" src={movie.trailerLink} frameborder="0" allowfullscreen></iframe>
+      <Link to="/">Back to Home</Link>
+    </div>
+  );
+}
+
+export default App;
