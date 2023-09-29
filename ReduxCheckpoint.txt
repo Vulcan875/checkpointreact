@@ -1,0 +1,188 @@
+export const ADD_TASK = 'ADD_TASK';
+export const TOGGLE_TASK = 'TOGGLE_TASK';
+export const FILTER_TASKS = 'FILTER_TASKS';
+export const EDIT_TASK = 'EDIT_TASK';
+
+
+import React from 'react';
+import AddTask from './components/AddTask';
+import ListTask from './components/ListTask';
+
+function App() {
+  return (
+    <div className="App">
+      <h1>ToDo App</h1>
+      <AddTask />
+      <ListTask />
+    </div>
+  );
+}
+
+export default App;
+
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import taskReducer from './reducers/taskReducer';
+import App from './App';
+
+const store = createStore(taskReducer);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
+
+
+import React from 'react';
+import { useSelector } from 'react-redux';
+import Task from './Task';
+
+function ListTask() {
+  const tasks = useSelector((state) => state.tasks);
+  const filter = useSelector((state) => state.filter);
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === 'all') return true;
+    if (filter === 'done') return task.isDone;
+    if (filter === 'not-done') return !task.isDone;
+    return true;
+  });
+
+  return (
+    <div>
+      <div>
+        <button onClick={() => filterTasks('all')}>All</button>
+        <button onClick={() => filterTasks('done')}>Done</button>
+        <button onClick={() => filterTasks('not-done')}>Not Done</button>
+      </div>
+      <div>
+        {filteredTasks.map((task) => (
+          <Task key={task.id} task={task} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default ListTask;
+
+
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addTask } from '../actions/taskActions';
+
+function AddTask() {
+  const [description, setDescription] = useState('');
+  const dispatch = useDispatch();
+
+  const handleSubmit = () => {
+    if (description.trim() !== '') {
+      dispatch(addTask(description));
+      setDescription('');
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Add a new task"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <button onClick={handleSubmit}>Add</button>
+    </div>
+  );
+}
+
+export default AddTask;
+
+
+import { ADD_TASK, TOGGLE_TASK, FILTER_TASKS, EDIT_TASK } from '../actions/taskActionTypes';
+
+const initialState = {
+  tasks: [],
+  filter: 'all',
+};
+
+const taskReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case ADD_TASK:
+      return {
+        ...state,
+        tasks: [
+          ...state.tasks,
+          {
+            id: Date.now(),
+            description: action.payload.description,
+            isDone: false,
+          },
+        ],
+      };
+    case TOGGLE_TASK:
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.id === action.payload.id ? { ...task, isDone: !task.isDone } : task
+        ),
+      };
+    case FILTER_TASKS:
+      return {
+        ...state,
+        filter: action.payload.filterType,
+      };
+    case EDIT_TASK:
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.id === action.payload.id ? { ...task, description: action.payload.description } : task
+        ),
+      };
+    default:
+      return state;
+  }
+};
+
+export default taskReducer;
+
+
+
+import { ADD_TASK, TOGGLE_TASK, FILTER_TASKS, EDIT_TASK } from './taskActionTypes';
+
+export const addTask = (description) => ({
+  type: ADD_TASK,
+  payload: {
+    description,
+  },
+});
+
+export const toggleTask = (id) => ({
+  type: TOGGLE_TASK,
+  payload: {
+    id,
+  },
+});
+
+export const filterTasks = (filterType) => ({
+  type: FILTER_TASKS,
+  payload: {
+    filterType,
+  },
+});
+
+export const editTask = (id, description) => ({
+  type: EDIT_TASK,
+  payload: {
+    id,
+    description,
+  },
+});
+
+
+
+
